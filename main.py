@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, \
+     check_password_hash
 import os
 
 app = Flask(__name__)
@@ -27,7 +29,7 @@ class UserCredentials(db.Model):
     def __init__(self, userEmail, userName, userPassword):
         self.userEmail = userEmail
         self.userName = userName
-        self.userPassword = userPassword
+        self.userPassword = generate_password_hash(userPassword)
 
     def is_active(self):
         return True
@@ -186,7 +188,7 @@ def login():
     # Verify username and password
     if db.session.query(UserCredentials.userName).filter(UserCredentials.userName == data["userName"]).count() > 0:
         player = db.session.query(UserCredentials).filter(UserCredentials.userName == data["userName"]).first()
-        if (player.userPassword == data["userPassword"]):
+        if check_password_hash(player.userPassword, data["userPassword"]):
             login_user(player, remember=True)
             response = {
                 "success": True,
