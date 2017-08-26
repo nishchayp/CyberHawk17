@@ -48,13 +48,15 @@ class UserDetails(db.Model):
     userPhone = db.Column(db.String(20))
     userCollege = db.Column(db.String(120))
     userLevel = db.Column(db.Integer)
+    userHints = db.Column(db.Integer)
 
-    def __init__(self, id, userName, userPhone, userCollege, userLevel):
+    def __init__(self, id, userName, userPhone, userCollege, userLevel, userHints):
         self.id = id
         self.userName = userName
         self.userPhone = userPhone
         self.userCollege = userCollege
         self.userLevel = userLevel
+        self.userHints = userHints
 
 db.create_all()
 db.session.commit()
@@ -94,7 +96,7 @@ def addPlayer():
         db.session.commit()
 
         # Add player details to UserDetails db
-        playerDetails = UserDetails(playerCredentials.id, playerCredentials.userName, data["userPhone"], data["userCollege"], 1)
+        playerDetails = UserDetails(playerCredentials.id, playerCredentials.userName, data["userPhone"], data["userCollege"], 1, 0)
         db.session.add(playerDetails)
         db.session.commit()
 
